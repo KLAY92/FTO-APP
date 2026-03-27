@@ -57,7 +57,10 @@ if st.button("🔥 FTO 분석 실행"):
 
             response = requests.post(
                 "https://unslashed-inflictive-eusebia.ngrok-free.dev/fto",
-                json={"keyword": keyword}
+                json={"keyword": keyword},
+                headers={
+                    "ngrok-skip-browser-warning": "true"
+                }
             )
 
             result = response.json()
