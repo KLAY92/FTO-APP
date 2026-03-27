@@ -46,6 +46,8 @@ st.subheader("📄 문서 업로드")
 patent_file = st.file_uploader("특허 명세서", type=["pdf", "txt"])
 
 # 실행 버튼
+import requests
+
 if st.button("🔥 FTO 분석 실행"):
 
     if patent_file is None:
@@ -53,14 +55,12 @@ if st.button("🔥 FTO 분석 실행"):
     else:
         with st.spinner("분석 진행 중..."):
 
-            # 🔥 핵심 변경
-            patents = get_mock_patents(keyword)
+            response = requests.post(
+                "https://unslashed-inflictive-eusebia.ngrok-free.dev/fto",
+                json={"keyword": keyword}
+            )
 
-            df = pd.DataFrame(patents)
+            result = response.json()
 
         st.success("분석 완료!")
-
-        st.subheader("📊 FTO 분석 결과")
-        st.dataframe(df)
-
-        st.bar_chart(df["유사도"])
+        st.write(result)
