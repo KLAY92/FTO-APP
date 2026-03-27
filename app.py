@@ -7,7 +7,7 @@ st.set_page_config(page_title="FTO 자동 분석 시스템", page_icon="🛡️"
 st.title("🛡️ FTO 자동 분석 시스템 (프라이빗 UI)")
 st.markdown("Colab 백엔드와 비동기로 통신하여 대용량 특허(1,000건 이상)를 안전하게 분석합니다.")
 
-API_URL = st.text_input("https://unslashed-inflictive-eusebia.ngrok-free.dev", value="https://[여기에_ngrok_주소입력].ngrok-free.dev")
+API_URL = st.text_input("🔗 Colab 백엔드 URL", value="https://unslashed-inflictive-eusebia.ngrok-free.dev")
 
 upload_patent = st.file_uploader("📄 특허 명세서 업로드 (PDF/TXT)", type=['pdf', 'txt'])
 
