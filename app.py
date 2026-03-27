@@ -1,6 +1,29 @@
 import streamlit as st
 import pandas as pd
 
+def get_mock_patents(keyword):
+    return [
+        {
+            "특허번호": "KR1020230001",
+            "발명명": f"{keyword} 시스템",
+            "유사도": 85,
+            "위험도": "HIGH"
+        },
+        {
+            "특허번호": "KR1020230002",
+            "발명명": f"{keyword} 제어 방법",
+            "유사도": 60,
+            "위험도": "MEDIUM"
+        },
+        {
+            "특허번호": "KR1020230003",
+            "발명명": f"{keyword} 장치",
+            "유사도": 30,
+            "위험도": "LOW"
+        }
+    ]
+
+
 def simple_fto_analysis(keyword):
     return {
         "검색 키워드": keyword,
@@ -30,10 +53,14 @@ if st.button("🔥 FTO 분석 실행"):
     else:
         with st.spinner("분석 진행 중..."):
 
-            # 🔥 여기 핵심 변경
-            result = simple_fto_analysis(keyword)
+            # 🔥 핵심 변경
+            patents = get_mock_patents(keyword)
+
+            df = pd.DataFrame(patents)
 
         st.success("분석 완료!")
-        st.write(result)
 
-st.write("버전2 테스트")
+        st.subheader("📊 FTO 분석 결과")
+        st.dataframe(df)
+
+        st.bar_chart(df["유사도"])
