@@ -1,45 +1,56 @@
 import streamlit as st
 import requests
 
-# ==============================
-# UI 설정
-# ==============================
-st.set_page_config(layout="wide")
-st.title("🚀 FTO 자동 분석 시스템")
-
-# 사이드바
-keyword = st.sidebar.text_input("기술 키워드", "배터리 열관리 시스템")
-
-# 파일 업로드
-st.subheader("📄 문서 업로드")
-patent_file = st.file_uploader("특허 명세서", type=["pdf", "txt"])
+st.title("🚀 FTO 분석 시스템")
 
 # ==============================
-# 분석 버튼
+# 입력 영역
+# ==============================
+keyword = st.text_input("🔍 검색 키워드 입력")
+
+patent_text = st.text_area("📄 특허 명세서 입력", height=300)
+
+# ==============================
+# 실행 버튼
 # ==============================
 if st.button("🔥 FTO 분석 실행"):
 
-    if patent_file is None:
-        st.error("특허 명세서를 업로드하세요")
+    if not keyword:
+        st.error("키워드를 입력하세요")
+    elif not patent_text:
+        st.error("특허 명세서를 입력하세요")
     else:
         with st.spinner("분석 진행 중..."):
 
+            # 🔥 여기다 넣는거다
             response = requests.post(
-                "https://unslashed-inflictive-eusebia.ngrok-free.dev/fto",   # 🔥 여기 수정
-                json={"keyword": keyword},
-                headers={
-                    "ngrok-skip-browser-warning": "true",
-                    "User-Agent": "Mozilla/5.0"
+                "https://xxxx.ngrok-free.app/fto",  # 👈 Colab에서 나온 주소
+                json={
+                    "keyword": keyword,
+                    "patent_text": patent_text
                 }
             )
 
-            # 🔥 디버깅 출력
+            # ==============================
+            # 디버깅 (중요🔥)
+            # ==============================
             st.write("상태코드:", response.status_code)
             st.write("응답내용:", response.text)
 
+            # ==============================
+            # 결과 출력
+            # ==============================
             try:
                 result = response.json()
+
                 st.success("분석 완료!")
-                st.write(result)
+
+                st.subheader("📊 요약 결과")
+                st.write(result["summary"])
+
+                st.subheader("📌 상세 결과")
+                for r in result["results"]:
+                    st.write(r)
+
             except:
                 st.error("❌ JSON 변환 실패")
