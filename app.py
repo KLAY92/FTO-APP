@@ -1,21 +1,41 @@
-# PC에서 작성하는 app.py
 import streamlit as st
 import requests
 
-st.title("🛡️ FTO 자동 분석 시스템")
-uploaded_file = st.file_uploader("특허 명세서를 업로드하세요", type=['pdf', 'txt'])
+# 페이지 기본 설정
+st.set_page_config(page_title="FTO 자동 분석 시스템", page_icon="🛡️", layout="centered")
 
-# Colab에서 출력된 URL을 여기에 복사
-API_URL = "https://[ngrok에서_생성된_임시주소].ngrok-free.app/run_fto"
+st.title("🛡️ FTO 자동 분석 시스템 (프라이빗 UI)")
+st.markdown("---")
 
-if st.button("분석 시작") and uploaded_file:
-    with st.spinner("Colab에서 FTO 분석 중입니다..."):
-        files = {"patent_file": (uploaded_file.name, uploaded_file.getvalue())}
-        response = requests.post(API_URL, files=files)
-        
-        if response.status_code == 200:
-            st.success("분석 완료!")
-            st.json(response.json())
-        else:
-            st.error("API 통신 에러")
+# 🌟 아까 Colab에서 뜬 URL을 여기에 복사해 줍니다. (매번 바뀌므로 입력창으로 뺐습니다)
+API_URL = st.text_input(
+    "🔗 Colab 백엔드 URL을 입력하세요 (끝에 /run_fto 추가)", 
+    value="https://unslashed-inflictive-eusebia.ngrok-free.dev/run_fto"
+)
+
+st.subheader("📄 분석 문서 업로드")
+upload_patent = st.file_uploader("1️⃣ 특허 명세서 (필수 첨부)", type=['pdf', 'txt'])
+
+if st.button("🚀 분석 시작 (서버 전송)", type="primary"):
+    if not upload_patent:
+        st.warning("🚨 특허 명세서를 먼저 업로드해주세요!")
+    else:
+        with st.spinner("Colab 서버로 파일을 전송하고 응답을 기다리는 중입니다..."):
+            try:
+                # 1. 전송할 파일 세팅
+                files = {
+                    "patent_file": (upload_patent.name, upload_patent.getvalue(), upload_patent.type)
+                }
+                
+                # 2. API 백엔드(Colab)로 POST 요청 쏘기
+                response = requests.post(API_URL, files=files)
+                
+                # 3. 응답 결과 처리
+                if response.status_code == 200:
+                    st.success("✅ 서버 통신 및 처리 성공!")
+                    st.json(response.json()) # 백엔드에서 온 JSON 띄워주기
+                else:
+                    st.error(f"🚨 서버 에러 발생: HTTP {response.status_code}")
+            except Exception as e:
+                st.error(f"🚨 통신 오류가 발생했습니다: {e}")
 
