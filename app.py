@@ -1,6 +1,12 @@
 import streamlit as st
 import pandas as pd
 
+def simple_fto_analysis(keyword):
+    return {
+        "검색 키워드": keyword,
+        "결과": "FTO 분석 준비 완료 (다음 단계에서 실제 분석 연결)"
+    }
+
 st.set_page_config(layout="wide")
 
 st.title("🚀 FTO 자동 분석 시스템")
@@ -24,15 +30,8 @@ if st.button("🔥 FTO 분석 실행"):
     else:
         with st.spinner("분석 진행 중..."):
 
-            data = {
-                "특허번호": ["KR123", "KR456", "KR789"],
-                "위험도": ["HIGH", "MEDIUM", "LOW"],
-                "유사도": [85, 60, 30]
-            }
-
-            df = pd.DataFrame(data)
+            # 🔥 여기 핵심 변경
+            result = simple_fto_analysis(keyword)
 
         st.success("분석 완료!")
-
-        st.dataframe(df)
-        st.bar_chart(df["유사도"])
+        st.write(result)
