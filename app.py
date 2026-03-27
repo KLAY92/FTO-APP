@@ -35,3 +35,5 @@ if st.button("🔥 FTO 분석 실행"):
 
         st.success("분석 완료!")
         st.write(result)
+
+st.write("버전2 테스트")
